@@ -33,6 +33,7 @@ extension CustomDiagnosticMessage: FixItMessage {
 
 public struct DemostrationMacro {}
 
+/*
 extension DemostrationMacro: MemberMacro {
     
     public static func expansion<Declaration, Context>(
@@ -70,14 +71,11 @@ extension DemostrationMacro: MemberMacro {
     
     
 }
+*/
 
-extension DemostrationMacro: ConformanceMacro {
-    public static func expansion<Declaration, Context>(
-        of node: AttributeSyntax,
-        providingConformancesOf declaration: Declaration,
-        in context: Context
-    ) throws -> [(TypeSyntax, GenericWhereClauseSyntax?)] where Declaration : DeclGroupSyntax, Context : MacroExpansionContext {
-                
+extension DemostrationMacro: ExtensionMacro {
+    public static func expansion(of node: SwiftSyntax.AttributeSyntax, attachedTo declaration: some SwiftSyntax.DeclGroupSyntax, providingExtensionsOf type: some SwiftSyntax.TypeSyntaxProtocol, conformingTo protocols: [SwiftSyntax.TypeSyntax], in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
+        
         var wrongType: (Syntax?, String)?
         if let _ = declaration.as(ClassDeclSyntax.self) {
             wrongType = nil
@@ -123,8 +121,8 @@ extension DemostrationMacro: ConformanceMacro {
 
         let vc = declaration.as(ClassDeclSyntax.self)!
             .inheritanceClause?
-            .inheritedTypeCollection.first?
-            .typeName.as(TypeSyntax.self)
+            .inheritedTypes.first?
+            .type.as(TypeSyntax.self)
         
         let VCName = "\(vc ?? "")".filter { $0 != Character(" ")}
         
@@ -132,11 +130,24 @@ extension DemostrationMacro: ConformanceMacro {
             throw CustomError.notAViewController
         }
         
+        guard case .argumentList(let arguments) = node.arguments else {
+            return []
+        }
         
-        return [("DemonstrationProtocol", nil)]
-                                                                        
+        let extensionDecl = try ExtensionDeclSyntax("extension \(type.trimmed): DemonstrationProtocol") {
+            for arg in arguments {
+                let decl: DeclSyntax =
+                """
+                func \(arg.label!)() -> String {
+                    return \(arg.expression)
+                }
+                """
+                decl
+            }
+        }
+        
+        return [extensionDecl]
     }
-    
 }
 
 @main

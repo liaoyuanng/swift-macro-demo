@@ -1,18 +1,23 @@
 import WWDC23Helper
+import UIKit
 
-
-class UIViewController {
-    
+/*
+// Type Error
+@demonstration(subjectTitle: "123", subtitle: "1223")
+struct TestClass: UIViewController {
+ 
 }
+*/
 
-protocol DemonstrationProtocol {
-    static func subjectTitle() -> String
-    static func subtitle() -> String
+/*
+// Type Error
+@demonstration(subjectTitle: "123", subtitle: "1223")
+class TestClass:  {
+
 }
+ */
 
-
-@demonstration(subjectTitle: "Swift macros", subtitle: "How to use it?")
+@demonstration(subjectTitle: "Macro Demo", subtitle: "extension macro")
 class TestClass: UIViewController {
-    
 }
 

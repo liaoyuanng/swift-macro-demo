@@ -13,20 +13,20 @@ final class WWDC23HelperTests: XCTestCase {
         // see more: https://github.com/apple/swift-syntax/issues/1801, https://github.com/apple/swift-syntax/issues/1801
         assertMacroExpansion(
             """
-            
             @demonstration(subjectTitle: "subject title test", subtitle: "subtitle test")
             class TestClass: UIViewController {
             }
             """,
             expandedSource: """
-            
             class TestClass: UIViewController {
-                static func subjectTitle() -> String {
+            }
+            
+            extension TestClass: DemonstrationProtocol {
+                func subjectTitle() -> String {
                     return "subject title test"
                 }
-                
-                static func subtitle() -> String {
-                    return " subtitle test"
+                func subtitle() -> String {
+                    return "subtitle test"
                 }
             }
             """,
