@@ -8,4 +8,4 @@ Integrate into an existing project through the following steps:
 
 See more:
 
-[Deep Dive in Swift macro](https://liaoyuanng.xyz/swift-macros)
+[Deep Dive into Swift macro](https://liaoyuanng.xyz/swift-macros)
